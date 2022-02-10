@@ -46,26 +46,38 @@ export class dep_calc extends Component{
             return;
         }
 
-        this.setState({
-            deps: [] //надо как-то очистить
-        });
+        let new_sum_rub = Number(this.state.sum_rub);
+        let plus_sum = (new_sum_rub * (100 + Number(this.state.interest_rate)) / 100 - new_sum_rub) / 12;
+        const array = [];
 
-        let new_sum_rub = this.state.sum_rub;
-
-        for (let i = 0; i < this.state.months; i ++)
+        for (let i = 1; i <= this.state.months; i ++)
         {
-            let row = {
+            const element = {
                 id: i,
-                sum_percent: new_sum_rub * (100 + this.state.interest_rate / 12) / 100 - new_sum_rub,
-                sum: new_sum_rub * (100 + this.state.interest_rate / 12) / 100
-            };
+                sum_percent: plus_sum,
+                sum: new_sum_rub + plus_sum
+            }
 
-            new_sum_rub = new_sum_rub * (100 + this.state.interest_rate / 12) / 100
+            array.push(element)
 
             this.setState({
-                deps: this.state.deps.concat(row)
+                deps: array
             });
+
+            new_sum_rub = new_sum_rub + plus_sum
         }
+
+        const element = {
+            id: 'Итог',
+            sum_percent:new_sum_rub - Number(this.state.sum_rub),
+            sum: new_sum_rub
+        }
+
+        array.push(element)
+
+        this.setState({
+            deps: array
+        });
     }
 
     render(){
