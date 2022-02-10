@@ -22,7 +22,7 @@ export class cred_calc extends Component{
 
         return(
             <div >
-                <h1>Кредитный калькулятор</h1>
+                <h2>Кредитный калькулятор</h2>
             </div>
         )
     }
