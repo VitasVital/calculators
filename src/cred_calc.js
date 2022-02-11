@@ -48,23 +48,66 @@ export class cred_calc extends Component{
     }
 
     differentiated(){
+        const stavka = this.state.interest_rate / 1200; //месячная процентная ставка
+        const n = Math.floor(this.state.sum_rub / this.state.months * 100) / 100;
+        const months_count = Number(this.state.months);
+        let monthly_payment = 0;
+        let sum_payment = 0;
 
+        let sum_ostatok = this.state.sum_rub;
+        const array = [];
+
+        for (let i = 1; i <= months_count; i ++)
+        {
+            monthly_payment = Math.floor((n + sum_ostatok * stavka) * 100) / 100;
+            sum_payment += monthly_payment;
+            sum_ostatok = Math.floor((sum_ostatok - n) * 100) / 100;
+
+            if (i == months_count)
+            {
+                sum_ostatok = 0;
+            }
+
+            const element = {
+                id: i,
+                monthly_payment: monthly_payment,
+                sum_ostatok: sum_ostatok
+            }
+
+            array.push(element)
+
+            this.setState({
+                deps: array
+            });
+        }
+
+        const element = {
+            id: 'Итог',
+            monthly_payment: Math.floor(sum_payment * 100) / 100,
+            sum_ostatok: sum_ostatok
+        }
+
+        array.push(element)
+
+        this.setState({
+            deps: array
+        });
     }
 
     annuity(){
-        const i = this.state.interest_rate / 1200; //месячная процентная ставка
-        const n = this.state.months; //количество периодов, в течение которых выплачивается кредит
-        const K = (i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1); //коэфициент анутитета
-        const A = K * this.state.sum_rub; //ануитетный платеж
+        const stavka = this.state.interest_rate / 1200; //месячная процентная ставка
+        const months_count = this.state.months; //количество периодов, в течение которых выплачивается кредит
+        const K = (stavka * Math.pow(1 + stavka, months_count)) / (Math.pow(1 + stavka, months_count) - 1); //коэфициент анутитета
+        const A = Math.floor(K * this.state.sum_rub * 100) / 100; //ануитетный платеж
 
-        let sum_ostatok = A * n;
+        let sum_ostatok = A * months_count;
         const array = [];
 
-        for (let i = 1; i <= n; i ++)
+        for (let i = 1; i <= months_count; i ++)
         {
-            sum_ostatok = sum_ostatok - A;
+            sum_ostatok = Math.floor((sum_ostatok - A) * 100) / 100;
 
-            if (i == n)
+            if (i == months_count)
             {
                 sum_ostatok = 0;
             }
@@ -84,8 +127,8 @@ export class cred_calc extends Component{
 
         const element = {
             id: 'Итог',
-            monthly_payment: A * n,
-            sum_ostatok: sum_ostatok
+            monthly_payment: Math.floor(A * months_count * 100) / 100,
+            sum_ostatok: Math.floor(sum_ostatok * 100) / 100
         }
 
         array.push(element)

@@ -54,8 +54,8 @@ export class dep_calc extends Component{
         {
             const element = {
                 id: i,
-                sum_percent: plus_sum,
-                sum: new_sum_rub + plus_sum
+                sum_percent: Math.floor(plus_sum * 100) / 100,
+                sum: Math.floor((new_sum_rub + plus_sum) * 100) / 100
             }
 
             array.push(element)
@@ -69,8 +69,8 @@ export class dep_calc extends Component{
 
         const element = {
             id: 'Итог',
-            sum_percent:new_sum_rub - Number(this.state.sum_rub),
-            sum: new_sum_rub
+            sum_percent: Math.floor((new_sum_rub - Number(this.state.sum_rub)) * 100) / 100,
+            sum: Math.floor(new_sum_rub * 100) / 100
         }
 
         array.push(element)
